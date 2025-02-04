@@ -36,7 +36,7 @@ L
 
 
 ## Architecture Diagram
-(![image](https://github.com/user-attachments/assets/0d7b5875-bf51-4985-bcfd-68ad94581163))
+![image](https://github.com/user-attachments/assets/0d7b5875-bf51-4985-bcfd-68ad94581163)
 
 
 ## Contributing
