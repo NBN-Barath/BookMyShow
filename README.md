@@ -36,7 +36,8 @@ L
 
 
 ## Architecture Diagram
-![image](https://excalidraw.com/#json=91cny-Zv7RWisy_bUdcDG,JFrrpY59JVsx-IGF-HZ-sQ)
+![image](![image](https://github.com/user-attachments/assets/4f277e6e-bee2-40a4-9e69-7230a068d065)
+)
 
 ## Contributing
 Contributions are welcome! Follow these steps to contribute:
