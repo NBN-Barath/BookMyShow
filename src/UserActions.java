@@ -65,94 +65,69 @@ public class UserActions {
         System.out.println("User successfully registered!");
     }
 
-    public static void availableMovies(UsersAccount user, LocalDate date) {
-        Scanner sc = new Scanner(System.in);
-        LocalDate selectedDate = date;
-        String location = user.getLocationOfUser();
+    static void availableMovies(UsersAccount currentUser, LocalDate today) { // method to see available Movies
+        ArrayList<Movies> movies = new ArrayList<>(); // new array list to store movies
+        System.out.println("-------------------------------");
 
-        while (true) {
-            System.out.println("========================");
-            System.out.println("Available movies in your location: " + location);
+        LocalDate currentDate = today; // Use the provided date
+        String location = currentUser.getLocationOfUser(); // Get user location
+        System.out.println("Movies Currently Available in Your Location: " + location);
+        boolean movieFound = false; // variable to know movie is found
 
-            boolean movieFound = false;
+        HashMap<String, ArrayList<Movies>> movieDetails = new HashMap<>(); // Store movies grouped by name
 
-            // Check for available movies based on location and date
-            for (String movieName : BMS.getMoviesHashMap().keySet()) {
-                for (Movies movie : BMS.getMoviesHashMap().get(movieName)) {
-                    if (movie.getLocationOfTheater().equalsIgnoreCase(location) && movie.getStartingDate().isEqual(selectedDate)) {
-                        System.out.println("=> " + movie.getNameOfMovie());
-                        movieFound = true;
-                    }
+        // Check and store movies based on location and date
+        for (String movieName : BMS.getMoviesHashMap().keySet()) { // Check movies based on location and date
+            ArrayList<Movies> movieList = BMS.getMoviesHashMap().get(movieName);
+
+            for (Movies movie : movieList) {
+                if (movie.getLocationOfTheater().equalsIgnoreCase(location) && currentDate.equals(movie.getStartingDate())) {
+                    movieFound = true;
+                    movieDetails.putIfAbsent(movie.getNameOfMovie(), new ArrayList<>());
+                    movieDetails.get(movie.getNameOfMovie()).add(movie);
                 }
             }
-
-            // If no movie found, prompt to change location or date
-            if (!movieFound) {
-                System.out.println("No movies available for the selected location and date.");
-                System.out.println("Would you like to change location or date? [1 = Yes, 0 = No]");
-                int changeOption = sc.nextInt();
-
-                if (changeOption == 1) {//if want to change location.
-                    LocalDate newDate = changeLocationOrDate(user, date);//calling changeLocationOrDate()
-                    if (!(newDate == null)) {//if new date is not null.
-                        selectedDate = newDate;//assigning the new date in date.
-                    }
-                } else {
-                    break;
-                }
-            } else {
-                break;
-            }
         }
 
-        // After finding the movies, proceed with ticket booking
-        System.out.println("Select the movie you would like to book tickets for:");
-        String movieToBook = sc.next();
-        boolean movieSelected = false;
+        // Display movies with their respective theaters, screens, and showtimes
+        if (movieFound) {
+            for (String movieName : movieDetails.keySet()) {
+                System.out.println("Movie: " + movieName);
 
-        // Check if the movie is available for the selected location and date
-        for (String movieName : BMS.getMoviesHashMap().keySet()) { // iterate all key set
-            for (Movies movie : BMS.getMoviesHashMap().get(movieName)) { // iterate all movie name set
-                if (movie.getNameOfMovie().equalsIgnoreCase(movieToBook) && movie.getLocationOfTheater().equalsIgnoreCase(location) && movie.getStartingDate().isEqual(selectedDate)) {
-                    movieSelected = true;
-                    ArrayList<Movies> movieList = new ArrayList<>(); // creating array list
-                    movieList.add(movie);// adding movie in the movie List
-                    bookTicket(user, movieList);  // Proceed with ticket booking
-                    break;
+                for (Movies movie : movieDetails.get(movieName)) {
+                    System.out.println("  Theater: " + movie.getTheater().getTheaterName());
+                    System.out.println("  Screen: " + movie.getShows().getScreen().getNameOfScreen());
+                    System.out.println("  Show Time: " + movie.getShows().getStartTime());
+                    System.out.println("-------------------------------");
                 }
             }
-            if (movieSelected) { // check true
-                break;
-            }
-        }
-
-        if (!movieSelected) { // check false
-            System.out.println("No movie found with the name you entered or it's not available for the selected location and date.");
-        }
-
-
-
-        System.out.println("Enter the movie name to book tickets:");
-        String selectedMovie = sc.next();
-
-        ArrayList<Movies> movieList = new ArrayList<>();
-        if(BMS.getMoviesHashMap().containsKey(selectedMovie)) // check movieHashMap has selected movie
-    {
-        for (Movies movie : BMS.getMoviesHashMap().get(selectedMovie)) { // iterate all movies
-            if (movie.getLocationOfTheater().equalsIgnoreCase(location) && movie.getStartingDate().isEqual(selectedDate)) { // checks location
-                movieList.add(movie); // add movie in array list
-            }
-        }
-        if (!movieList.isEmpty()) { // check if empty
-            bookTicket(user, movieList); // calling book ticket method
         } else {
-            System.out.println("Selected movie is not available on the chosen date.");
+            // If no movies found initially
+            System.out.println("-------------------------------");
+            System.out.println("No movies available in your location today.");
+            System.out.println("Would you like to change the (Date or Location)? (Y/N):");
+            String choice = in.next();
+
+            if (choice.equalsIgnoreCase("Y")) {
+                LocalDate updatedDate = changeLocationOrDate(currentUser, today);
+                if (updatedDate != null) {
+                    availableMovies(currentUser, updatedDate);
+                    return;
+                }
+            }
         }
-    } else
-    {
-        System.out.println("No such movie available.");
+
+        System.out.println("Enter the Movie name to book:");
+        String currentMovie = in.nextLine();
+
+        for (Movies movie : BMS.getMoviesHashMap().getOrDefault(currentMovie, new ArrayList<>())) {
+            if (movie.getLocationOfTheater().equals(currentUser.getLocationOfUser()) && movie.getStartingDate().isEqual(currentDate)) {
+                movies.add(movie);
+            }
+        }
+        bookTicket(currentUser, movies);
     }
-}
+
 
     public static void bookTicket(UsersAccount user, ArrayList<Movies> movies) {
         Scanner sc = new Scanner(System.in);
@@ -289,7 +264,7 @@ public class UserActions {
                 // getting the locations
                 System.out.println("Enter your new Location :");
                 String newLocation = sc.next();
-                if (availableLocations.contains(newLocation)) {//if newlocation is contains in the locations
+                if (availableLocations.contains(newLocation)) {//if newlocation is containing in the locations
                     user.setLocationOfUser(newLocation);//setting the newlocation to the user
                     System.out.println("Location changed Successfully to " + newLocation);//printing the location after change
                     return LocalDate.now();
@@ -376,7 +351,7 @@ public class UserActions {
                 adjustedColumn = seatColumn - 1; // First block, normal index
                 System.out.println("First Block: Adjusted Column for " + seatColumn + " is " + adjustedColumn);
             } else if (seatColumn <= firstBlockSize + secondBlockSize) {
-                adjustedColumn = seatColumn - 1; // Second block, adjust index
+                adjustedColumn = seatColumn ; // Second block, adjust index
                 System.out.println("Second Block: Adjusted Column for " + seatColumn + " is " + adjustedColumn);
             } else {
                 adjustedColumn = seatColumn +1 ; // Third block, adjust index

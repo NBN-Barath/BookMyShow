@@ -26,7 +26,7 @@ public class Utility {
             ArrayList<String> rowSeats = new ArrayList<>();
             int n = 1;
 
-            // Handle lowercase letters after 'Z'
+            // Handle lowercase letters after Z
             if ((int) ch > 90 && (int) ch < 97) {
                 ch = 'a';
             }
