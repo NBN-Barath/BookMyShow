@@ -2,7 +2,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class Shows {
     private LocalTime startTime ; // starting time of the show
@@ -11,8 +10,7 @@ public class Shows {
     private Screen screen; // store which screen
     private int ticketPrice; // store the ticket price of show
     private HashMap<Character, ArrayList<String>> seatArrangement; // hashmap to store seat arrangement
-    //private HashSet<String> bookedSeats = new HashSet<>(); // Tracks booked seat numbers
-    private int totalSeats;
+    private int totalSeats; // total no of seat
 
 
 
@@ -52,36 +50,9 @@ public class Shows {
     public HashMap<Character, ArrayList<String>> getSeatArrangement() {
         return seatArrangement;
     }
-//    public HashSet<Integer> getBookedSeats() {
-//        return bookedSeats;
-//    }
-//    public ArrayList<Integer> getAvailableSeats() {
-//        ArrayList<Integer> availableSeats = new ArrayList<>();
-//        for (int seat = 1; seat <= totalSeats; seat++) {
-//            if (!bookedSeats.contains(seat)) {
-//                availableSeats.add(seat);
-//            }
-//        }
-//        return availableSeats;
-//    }
-
-    // Getter for bookedSeats
-//    public HashSet<String> getBookedSeats() {
-//        return bookedSeats;
-//    }
-
-//    public void setBookedSeats(HashSet<String> bookedSeats) {
-//        this.bookedSeats = bookedSeats;
-//    }
 
     public void setSeatArrangement(HashMap<Character, ArrayList<String>> seatArrangement) {
         this.seatArrangement = seatArrangement;
     }
-//
-//    @Override
-//    public String toString() {
-//        return "Show Time: " + startTime + ", Price: " + ticketPrice;
-//    }
-
 }
 
