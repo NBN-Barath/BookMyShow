@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class AdminActions {
+public class AdminActions implements Utility,CommonAction {
     public static void addAdmin(ArrayList<Accounts> accountsArrayList, Scanner scanner) {
         System.out.print("Enter the new Admin Name: ");
         String registeringUserName = scanner.next();
@@ -225,7 +225,7 @@ public class AdminActions {
 
                 System.out.print("Enter the grid: ");
                 String screenGrid = scanner.next(); // getting grid
-                var grid = Utility.generateSeatingPatterns(noOfSeats, screenGrid); // store the seating patten
+                var grid =Utility.generateSeatingPatterns(noOfSeats, screenGrid); // store the seating patten
                 if (grid == null) { // check it is null
                     System.out.println("Invalid grid! Please re-enter the screen details.");
                     continue;

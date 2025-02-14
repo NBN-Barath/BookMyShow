@@ -2,7 +2,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-public class UserActions {
+public class UserActions implements CommonAction{
     static Scanner in = new Scanner(System.in);
 
     // Register method
@@ -106,7 +106,8 @@ public class UserActions {
             System.out.println("-------------------------------");
             System.out.println("No movies available in your location today.");
             System.out.println("Would you like to change the (Date or Location)? (Y/N):");
-            String choice = in.next();
+           // scanner.nextLine();  // Consume the leftover newline
+            String choice = in.next(); // Use nextLine() to avoid input issues
 
             if (choice.equalsIgnoreCase("Y")) {
                 LocalDate updatedDate = changeLocationOrDate(currentUser, today);
@@ -115,10 +116,11 @@ public class UserActions {
                     return;
                 }
             }
+
         }
 
         System.out.println("Enter the Movie name to book:");
-        String currentMovie = in.nextLine();
+        String currentMovie = in.next();
 
         for (Movies movie : BMS.getMoviesHashMap().getOrDefault(currentMovie, new ArrayList<>())) {
             if (movie.getLocationOfTheater().equals(currentUser.getLocationOfUser()) && movie.getStartingDate().isEqual(currentDate)) {
@@ -130,7 +132,6 @@ public class UserActions {
 
 
     public static void bookTicket(UsersAccount user, ArrayList<Movies> movies) {
-        Scanner sc = new Scanner(System.in);
         HashMap<String, HashSet<Shows>> theatreShows = new HashMap<>(); // new hash map
 
         // group shows by theatre
@@ -154,7 +155,7 @@ public class UserActions {
         String theatreName;
         while (true) {
             System.out.println("Enter theatre name (or 0 to exit):");
-            theatreName = sc.next();
+            theatreName = in.next();
             if (theatreName.equals("0")) {
                 System.out.println("Exiting...");
                 return;
@@ -170,7 +171,7 @@ public class UserActions {
         while (true) {
             System.out.println("Enter show time:");
             try {
-                showTime = LocalTime.parse(sc.nextLine(), BMS.getTimeFormatter());
+                showTime = LocalTime.parse(in.next(), BMS.getTimeFormatter());
                 break;
             } catch (Exception e) {
                 System.out.println("Invalid time format. Try again.");
@@ -200,9 +201,9 @@ public class UserActions {
 
         // select seats
         System.out.println("Enter number of seats:");
-        int seatCount = Integer.parseInt(sc.nextLine());
+        int seatCount = Integer.parseInt(in.next());
         int price = selectedShow.getTicketPrice() * seatCount;
-        int availableSeats = selectedShow.getScreen().getTotalOnOfSeatAvaliable();
+        //int availableSeats = selectedShow.getScreen().getTotalOnOfSeatAvaliable();
         ArrayList<String> bookedSeats = seatSelection( selectedShow,seatCount);
 
         if (bookedSeats != null) {
@@ -246,9 +247,9 @@ public class UserActions {
     }
 
     public static LocalDate changeLocationOrDate(UsersAccount user, LocalDate today) {//method to change the location and date.
-        Scanner sc = new Scanner(System.in);//Scanner object to get the object.
+        //Scanner sc = new Scanner(System.in);//Scanner object to get the object.
         System.out.println(" What would you want to change \n 1.Location \n 2.Date \n 3. Exit \n Enter your choice :");
-        int choice = Integer.parseInt(sc.nextLine());//choice variable .
+        int choice = Integer.parseInt(in.nextLine());//choice variable .
         switch (choice) {//switch case for the change location or date.
             case 1:
                 //case for changing the location
@@ -263,11 +264,12 @@ public class UserActions {
                 }
                 // getting the locations
                 System.out.println("Enter your new Location :");
-                String newLocation = sc.next();
+                String newLocation = in.next();
                 if (availableLocations.contains(newLocation)) {//if newlocation is containing in the locations
                     user.setLocationOfUser(newLocation);//setting the newlocation to the user
                     System.out.println("Location changed Successfully to " + newLocation);//printing the location after change
                     return LocalDate.now();
+
                 } else {//if location is not available
                     System.out.println("Location not valid !");
                 }
@@ -278,7 +280,7 @@ public class UserActions {
                 while (true) {
                     System.out.println("Enter your new date");
                     try {
-                        LocalDate newDate = LocalDate.parse(sc.nextLine(), BMS.getDateFormatter());//getting local date
+                        LocalDate newDate = LocalDate.parse(in.nextLine(), BMS.getDateFormatter());//getting local date
                         if (newDate.isAfter(today) || newDate.isEqual(today)) { // check the date is not in past
                             System.out.println("Date changed successfully to :" + newDate);
                             return newDate;//returning the new date
@@ -349,13 +351,13 @@ public class UserActions {
             int adjustedColumn = -1; // adjustment in column
             if (seatColumn <= firstBlockSize) {
                 adjustedColumn = seatColumn - 1; // First block, normal index
-                System.out.println("First Block: Adjusted Column for " + seatColumn + " is " + adjustedColumn);
+                //System.out.println("First Block: Adjusted Column for " + seatColumn + " is " + adjustedColumn);
             } else if (seatColumn <= firstBlockSize + secondBlockSize) {
                 adjustedColumn = seatColumn ; // Second block, adjust index
-                System.out.println("Second Block: Adjusted Column for " + seatColumn + " is " + adjustedColumn);
+               // System.out.println("Second Block: Adjusted Column for " + seatColumn + " is " + adjustedColumn);
             } else {
                 adjustedColumn = seatColumn +1 ; // Third block, adjust index
-                System.out.println("Third Block: Adjusted Column for " + seatColumn + " is " + adjustedColumn);
+               // System.out.println("Third Block: Adjusted Column for " + seatColumn + " is " + adjustedColumn);
             }
 
             if (adjustedColumn >= seatRowList.size()) { // check size
@@ -363,7 +365,7 @@ public class UserActions {
                 continue;
             }
 
-            if (seatRowList.get(adjustedColumn).equals("X")) { // check if it is booked
+            if (seatRowList.get(adjustedColumn).equals("[X]")) { // check if it is booked
                 System.out.println("Seat already booked! Choose another.");
                 continue;
             }

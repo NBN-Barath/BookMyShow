@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Utility {
-    public static HashMap<Character, ArrayList<String>> generateSeatingPatterns(int noOfSeats, String screenGrid) {
+public interface Utility {
+     static HashMap<Character, ArrayList<String>> generateSeatingPatterns(int noOfSeats, String screenGrid) {
         int remainingSeats = noOfSeats;
         String[] splitGrid = screenGrid.split("\\*");
 

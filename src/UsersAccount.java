@@ -20,14 +20,21 @@ public class UsersAccount extends Accounts {
         return ticket;
     }
 
-    public void addTicket(Tickets ticket) {
-        this.ticket.add(ticket);
-    }
-
-
-
-
     public void setLocationOfUser(String locationOfUser) {
         this.locationOfUser = locationOfUser;
+    }
+    @Override
+    public String getId(){
+        return super.id;
+    }
+
+    @Override
+    public String getName(){
+        return super.name;
+    }
+
+    @Override
+    public String getPassword(){
+        return super.password;
     }
 }

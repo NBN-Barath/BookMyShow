@@ -1,9 +1,9 @@
-public class Accounts {
-    private String name; // store name
-    private String id; // store id
-    private String password; // store password
-    private String phone_number; // store phone numer
-    private String email_id; // store email id
+public abstract class Accounts {
+    protected String name; // store name
+    protected String id; // store id
+    protected String password; // store password
+    protected String phone_number; // store phone number
+    protected String email_id; // store email id
 
 
     public Accounts(String name, String id, String password, String phoneNumber, String emailId) { // constructor
@@ -14,17 +14,11 @@ public class Accounts {
         this.email_id = emailId;
     }
 
-    // getter and setter
-    public String getId() {
-        return id;
-    }
+    // Abstract method of getter and setter
+    public abstract String getId();
 
-    public String getName() {
-        return name;
-    }
+    public abstract String getName();
 
-    public String getPassword() {
-        return password;
-    }
+    public abstract String getPassword();
 
 }

@@ -15,7 +15,7 @@ public class BMS_Actions {
         accountsArrayList.add(new UsersAccount("2","2","2","2","2","cbe")); // default user
         while (true){
             System.out.println("Enter the option:");
-            System.out.println(" 1.Login\n 2.Register");
+            System.out.println(" 1.Login\n 2.Register\n3.Exit");
             int loginChoice = scanner.nextInt();
             Accounts loginAccount;
             // ask user login or register
@@ -34,13 +34,14 @@ public class BMS_Actions {
                         System.out.println("Thank You");
                     }
                 }
-            }
-            else if(loginChoice == 2) {
+            } else if(loginChoice == 2) {
                 UserActions.registerUser(accountsArrayList,scanner);
-            }
-            else {
-                System.out.println("Enter the valid input...");
+            } else if (loginChoice == 3) {
+                System.out.println("Thank you to use Book My Show");
                 return;
+            } else {
+                System.out.println("Enter the valid input...");
+
             }
         }
 
