@@ -14,13 +14,6 @@ public abstract class Accounts { // Abstract class
         this.email_id = emailId;
     }
 
-    // Abstract method of getter and setter
-//    public abstract String getId();
-//
-//    public abstract String getName();
-//
-//    public abstract String getPassword();
-
     public String getId(){
         return id;
     }

@@ -24,18 +24,4 @@ public class UsersAccount extends Accounts {
         this.locationOfUser = locationOfUser;
     }
 
-    //    @Override
-//    public String getId(){
-//        return super.id;
-//    }
-//
-//    @Override
-//    public String getName(){
-//        return super.name;
-//    }
-//
-//    @Override
-//    public String getPassword(){
-//        return super.password;
-//    }
 }

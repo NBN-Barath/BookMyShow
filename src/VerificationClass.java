@@ -5,6 +5,4 @@ public class VerificationClass {
 //        return otp;
         return (int) (1000 +(Math.random() * ((9999 - 1000) + 1)));
     }
-
-
 }
