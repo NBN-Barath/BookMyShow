@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public interface CommonAction {
-    static Accounts login(ArrayList<Accounts> accountsArrayList, Scanner scanner) // common login to user and admin
+public class CommonAction implements CommonActionInterface{
+
+    @Override
+    public Accounts login(ArrayList<Accounts> accountsArrayList, Scanner scanner) // common login to user and admin
     {
         System.out.println("Enter the User Id");
         String id = scanner.next();// get id

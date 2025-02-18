@@ -1,4 +1,4 @@
-public abstract class Accounts {
+public abstract class Accounts { // Abstract class
     protected String name; // store name
     protected String id; // store id
     protected String password; // store password
@@ -15,10 +15,22 @@ public abstract class Accounts {
     }
 
     // Abstract method of getter and setter
-    public abstract String getId();
+//    public abstract String getId();
+//
+//    public abstract String getName();
+//
+//    public abstract String getPassword();
 
-    public abstract String getName();
+    public String getId(){
+        return id;
+    }
 
-    public abstract String getPassword();
+    public String getName(){
+        return name;
+    }
+
+    public String getPassword(){
+        return password;
+    }
 
 }

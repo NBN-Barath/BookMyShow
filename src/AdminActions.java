@@ -1,11 +1,13 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class AdminActions implements Utility,CommonAction {
-    public static void addAdmin(ArrayList<Accounts> accountsArrayList, Scanner scanner) {
+public class AdminActions implements AdminActionsInterface {
+    @Override
+    public void addAdmin(ArrayList<Accounts> accountsArrayList, Scanner scanner) {
         System.out.print("Enter the new Admin Name: ");
         String registeringUserName = scanner.next();
         System.out.print("Enter the new Admin Id: ");
@@ -36,8 +38,8 @@ public class AdminActions implements Utility,CommonAction {
         System.out.println("Admin successfully registered!");
 
 }
-
-    public static void addMovies(HashMap<String, Theater> theaterHashMap, Scanner scanner) {
+    @Override
+    public void addMovies(HashMap<String, Theater> theaterHashMap, Scanner scanner) {
         System.out.println("Enter the movie name:");
         String movieName = scanner.next().trim();
 
@@ -131,23 +133,20 @@ public class AdminActions implements Utility,CommonAction {
 
         System.out.println("Movie added successfully!");
     }
-
-    private static LocalDate getValidDate(Scanner scanner) {
+    @Override
+    public LocalDate getValidDate(Scanner scanner) {
         // Getting date
         System.out.println("Enter the date (dd mm yyyy):");
         try {
-            int day = scanner.nextInt();
-            int month = scanner.nextInt();
-            int year = scanner.nextInt();
-            return LocalDate.of(year, month, day);
+            return LocalDate.parse(scanner.next(), BMS.getDateFormatter());
         } catch (Exception e) {
             System.out.println("Invalid date format!");
             scanner.next(); // Clear invalid input
             return null;
         }
     }
-
-    private static LocalTime getValidTime(Scanner scanner) { // getting time
+    @Override
+    public LocalTime getValidTime(Scanner scanner) { // getting time
         System.out.println("Enter the time (HH:mm):");
         try {
             String timeInput = scanner.next();
@@ -157,8 +156,8 @@ public class AdminActions implements Utility,CommonAction {
             return null;
         }
     }
-
-    private static int getPositiveInteger(Scanner scanner, String errorMessage) {// method to get positive integer
+    @Override
+    public int getPositiveInteger(Scanner scanner, String errorMessage) {// method to get positive integer
         try {
             int value = scanner.nextInt();
             if (value > 0) return value;
@@ -169,9 +168,8 @@ public class AdminActions implements Utility,CommonAction {
         return -1;
     }
 
-
-
-    public static void viewMovies(HashMap<String, ArrayList<Movies>> moviesHashMap) { // method to view movies
+    @Override
+    public void viewMovies(HashMap<String, ArrayList<Movies>> moviesHashMap) { // method to view movies
         if (moviesHashMap.isEmpty()){ // check moviehashmap is empty
             System.out.println("No movies available !");
             return ;
@@ -189,8 +187,8 @@ public class AdminActions implements Utility,CommonAction {
             }
         }
     }
-
-    public static void addTheater(Scanner scanner) { // method to add theater
+    @Override
+    public void addTheater(Scanner scanner) { // method to add theater
         try {
             System.out.print("Enter the Theater name: ");
             String name = scanner.next(); // getting theater name
@@ -223,9 +221,10 @@ public class AdminActions implements Utility,CommonAction {
                 System.out.print("Enter the number of seats: ");
                 int noOfSeats = getValidIntegerInput(scanner, "Number of seats must be a positive integer: "); // getting input
 
+                Utility utility = new Utility();
                 System.out.print("Enter the grid: ");
                 String screenGrid = scanner.next(); // getting grid
-                var grid =Utility.generateSeatingPatterns(noOfSeats, screenGrid); // store the seating patten
+                var grid =utility.generateSeatingPatterns(noOfSeats, screenGrid); // store the seating patten
                 if (grid == null) { // check it is null
                     System.out.println("Invalid grid! Please re-enter the screen details.");
                     continue;
@@ -244,8 +243,8 @@ public class AdminActions implements Utility,CommonAction {
             System.out.println("An unexpected error occurred. Please try again.");
         }
     }
-
-    private static int getValidIntegerInput(Scanner scanner, String errorMessage) { // method to get a valid integer
+    @Override
+    public int getValidIntegerInput(Scanner scanner, String errorMessage) { // method to get a valid integer
         while (true) {
             try {
                 String input = scanner.next();
@@ -261,8 +260,8 @@ public class AdminActions implements Utility,CommonAction {
         }
     }
 
-
-    public static void viewAllTheater() { // method to view all theater
+    @Override
+    public void viewAllTheater() { // method to view all theater
         if (BMS.getTheaterHashMap().isEmpty()){ // check moviehashmap is empty
             System.out.println("No Theater available !");
             return ;

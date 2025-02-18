@@ -2,11 +2,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-public class UserActions implements CommonAction{
+public class UserActions implements UserActionsInterface {
     static Scanner in = new Scanner(System.in);
 
+    @Override
     // Register method
-    public static void registerUser(ArrayList<Accounts> accountsArrayList, Scanner scanner) {
+    public void registerUser(ArrayList<Accounts> accountsArrayList, Scanner scanner) {
         System.out.print("Enter the new User Name: ");
         String registeringUserName = scanner.next();
         System.out.print("Enter the new User Id: ");
@@ -64,8 +65,8 @@ public class UserActions implements CommonAction{
         accountsArrayList.add(usersAccount);
         System.out.println("User successfully registered!");
     }
-
-    static void availableMovies(UsersAccount currentUser, LocalDate today) { // method to see available Movies
+    @Override
+    public void availableMovies(UsersAccount currentUser, LocalDate today) { // method to see available Movies
         ArrayList<Movies> movies = new ArrayList<>(); // new array list to store movies
         System.out.println("-------------------------------");
 
@@ -130,8 +131,8 @@ public class UserActions implements CommonAction{
         bookTicket(currentUser, movies);
     }
 
-
-    public static void bookTicket(UsersAccount user, ArrayList<Movies> movies) {
+    @Override
+    public void bookTicket(UsersAccount user, ArrayList<Movies> movies) {
         HashMap<String, HashSet<Shows>> theatreShows = new HashMap<>(); // new hash map
 
         // group shows by theatre
@@ -225,8 +226,8 @@ public class UserActions implements CommonAction{
         }
     }
 
-
-    public static void viewTickets(UsersAccount user) {//method for view the booked tickets
+    @Override
+    public void viewTickets(UsersAccount user) {//method for view the booked tickets
         if (user.getTicket().isEmpty()) {//if ticket of user is empty
             System.out.println("No Tickets booked !");
             return;
@@ -245,11 +246,11 @@ public class UserActions implements CommonAction{
             System.out.println("**********************************************\n");
         }
     }
-
-    public static LocalDate changeLocationOrDate(UsersAccount user, LocalDate today) {//method to change the location and date.
+    @Override
+    public LocalDate changeLocationOrDate(UsersAccount user, LocalDate today) {//method to change the location and date.
         //Scanner sc = new Scanner(System.in);//Scanner object to get the object.
         System.out.println(" What would you want to change \n 1.Location \n 2.Date \n 3. Exit \n Enter your choice :");
-        int choice = Integer.parseInt(in.nextLine());//choice variable .
+        int choice = in.nextInt();//choice variable .
         switch (choice) {//switch case for the change location or date.
             case 1:
                 //case for changing the location
@@ -268,7 +269,10 @@ public class UserActions implements CommonAction{
                 if (availableLocations.contains(newLocation)) {//if newlocation is containing in the locations
                     user.setLocationOfUser(newLocation);//setting the newlocation to the user
                     System.out.println("Location changed Successfully to " + newLocation);//printing the location after change
-                    return LocalDate.now();
+                    LocalDate todayNow =LocalDate.now();
+                    String formattedDate = todayNow.format(BMS.getDateFormatter());
+                    LocalDate date = LocalDate.parse(formattedDate, BMS.getDateFormatter());
+                    return date;
 
                 } else {//if location is not available
                     System.out.println("Location not valid !");
@@ -300,8 +304,8 @@ public class UserActions implements CommonAction{
         }
         return null;//return statement for method
     }
-
-    public static ArrayList<String> seatSelection(Shows show, int totalSeatsToBook) { // method to seect seat
+    @Override
+    public ArrayList<String> seatSelection(Shows show, int totalSeatsToBook) { // method to seect seat
         Scanner sc = new Scanner(System.in);
         HashMap<Character, ArrayList<String>> seatArrangementCopy = new HashMap<>(); // new hash map
 
@@ -348,7 +352,7 @@ public class UserActions implements CommonAction{
             List<String> seatRowList = seatArrangementCopy.get(seatRow); // duplicate arraylist
 
             // Calculate seat position for the section
-            int adjustedColumn = -1; // adjustment in column
+            int adjustedColumn ; // adjustment in column
             if (seatColumn <= firstBlockSize) {
                 adjustedColumn = seatColumn - 1; // First block, normal index
                 //System.out.println("First Block: Adjusted Column for " + seatColumn + " is " + adjustedColumn);
