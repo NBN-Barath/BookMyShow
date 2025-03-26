@@ -39,6 +39,10 @@ L
 ![image](https://github.com/user-attachments/assets/0d7b5875-bf51-4985-bcfd-68ad94581163)
 
 
+## Console Output Recording
+https://github.com/user-attachments/assets/565f26ff-b9ac-486f-a8e5-a169945ba53e
+
+
 ## Contributing
 Contributions are welcome! Follow these steps to contribute:
 1. Fork the repository.
