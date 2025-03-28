@@ -13,12 +13,11 @@ public class BMS_Actions implements BMS_ActionsInterface {
     @Override
     public void start(){ // start method
         Scanner scanner = new Scanner(System.in); // scanner object
-        accountsArrayList.add(new AdminAccount("Admin1","1","1","7339084681","admin1@gmail.com")); // default Admin
-        accountsArrayList.add(new UsersAccount("2","2","2","2","2","cbe")); // default user
+        accountsArrayList.add(new AdminAccount("Admin","admin","1234","7339084681","admin1@gmail.com")); // default Admin
         UserActions userActions = new UserActions(); // Object to UserActions
         while (true){
             System.out.println("Enter the option:");
-            System.out.println(" 1.Login\n 2.Register\n3.Exit");
+            System.out.println(" 1.Login\n 2.Register\n 3.Exit");
             int loginChoice = scanner.nextInt();
             Accounts loginAccount;
             // ask user login or register
@@ -62,7 +61,7 @@ public class BMS_Actions implements BMS_ActionsInterface {
     public void adminOption(Scanner scanner){ // action for admin
         AdminActions adminActions = new AdminActions();
         while (true){
-            System.out.println("1.Add admin \n 2.Add Movie \n 3.View Movie \n 4.Add Theater \n 5.View Theater \n 6.Exit");
+            System.out.println(" 1.Add admin \n 2.Add Movie \n 3.View Movie \n 4.Add Theater \n 5.View Theater \n 6.Exit");
             int choice= scanner.nextInt();
             if(choice == 1){
                 adminActions.addAdmin(accountsArrayList,scanner); //add admin

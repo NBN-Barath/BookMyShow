@@ -38,22 +38,6 @@ public class Screen {
         return runningShows;
     }
 
-    public int getTotalOnOfSeatAvaliable() {
-        return totalOnOfSeatAvaliable;
-    }
-
-    public void setSeatingArrangement(HashMap<Character, ArrayList<String>> seatingArrangement) {
-        this.seatingArrangement = seatingArrangement;
-    }
-
-    public void setTotalOnOfSeatAvaliable(int totalOnOfSeatAvaliable) {
-        this.totalOnOfSeatAvaliable = totalOnOfSeatAvaliable;
-    }
-
-//    public void setTotalNoOfSeat(int totalNoOfSeat) {
-//        this.totalNoOfSeat = totalNoOfSeat;
-//    }
-
     public String getGrid() {
         return grid;
     }

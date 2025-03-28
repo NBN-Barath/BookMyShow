@@ -20,10 +20,6 @@ public class Tickets {
         return nameOfTheater;
     }
 
-    public String getNameOfUser() {
-        return nameOfUser;
-    }
-
     public void setNameOfUser(String nameOfUser) {
         this.nameOfUser = nameOfUser;
     }

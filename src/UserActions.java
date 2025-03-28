@@ -204,7 +204,6 @@ public class UserActions implements UserActionsInterface {
         System.out.println("Enter number of seats:");
         int seatCount = Integer.parseInt(in.next());
         int price = selectedShow.getTicketPrice() * seatCount;
-        //int availableSeats = selectedShow.getScreen().getTotalOnOfSeatAvaliable();
         ArrayList<String> bookedSeats = seatSelection( selectedShow,seatCount);
 
         if (bookedSeats != null) {

@@ -24,4 +24,5 @@ public class UsersAccount extends Accounts {
         this.locationOfUser = locationOfUser;
     }
 
+    
 }

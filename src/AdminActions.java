@@ -1,6 +1,5 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -46,19 +45,59 @@ public class AdminActions implements AdminActionsInterface {
         System.out.println("Enter the location for the movie:");
         String locationOfTheater = scanner.next().trim();
 
-        // Check if theater exists in the given location
-        Theater theater = null;
-        for (String theaterKey : theaterHashMap.keySet()) {
-            Theater currentTheater = theaterHashMap.get(theaterKey);
-            if (currentTheater.getTheaterLocation().equalsIgnoreCase(locationOfTheater)) {
-                theater = currentTheater;
-                break;
+        // Filter theaters based on location
+        ArrayList<Theater> availableTheaters = new ArrayList<>();
+        for (Theater theater : theaterHashMap.values()) {
+            if (theater.getTheaterLocation().equalsIgnoreCase(locationOfTheater)) {
+                availableTheaters.add(theater);
             }
         }
-        if (theater == null) {
-            System.out.println("No theater found in your location!");
+
+        if (availableTheaters.isEmpty()) {
+            System.out.println("No theaters found in the specified location.");
             return;
         }
+
+        // Display available theaters
+        System.out.println("Available theaters in " + locationOfTheater + ":");
+        for (int i = 0; i < availableTheaters.size(); i++) {
+            System.out.println((i + 1) + ". " + availableTheaters.get(i).getTheaterName());
+        }
+
+        // Select a theater
+        System.out.print("Select a theater (Enter number): ");
+        int theaterChoice = getValidIntegerInput(scanner, "Invalid choice. Please enter a valid number:");
+
+        if (theaterChoice < 1 || theaterChoice > availableTheaters.size()) {
+            System.out.println("Invalid selection!");
+            return;
+        }
+
+        Theater selectedTheater = availableTheaters.get(theaterChoice - 1);
+
+        // Display available screens in the selected theater
+        if (selectedTheater.getScreenMap().isEmpty()) {
+            System.out.println("No screens available in this theater.");
+            return;
+        }
+
+        System.out.println("Available screens in " + selectedTheater.getTheaterName() + ":");
+        ArrayList<String> screenNames = new ArrayList<>(selectedTheater.getScreenMap().keySet());
+        for (int i = 0; i < screenNames.size(); i++) {
+            System.out.println((i + 1) + ". " + screenNames.get(i));
+        }
+
+        // Select a screen
+        System.out.print("Select a screen (Enter number): ");
+        int screenChoice = getValidIntegerInput(scanner, "Invalid choice. Please enter a valid number:");
+
+        if (screenChoice < 1 || screenChoice > screenNames.size()) {
+            System.out.println("Invalid selection!");
+            return;
+        }
+
+        String screenName = screenNames.get(screenChoice - 1);
+        Screen selectedScreen = selectedTheater.getScreenMap().get(screenName);
 
         // Get the movie start date
         LocalDate startingDateOfMovie = getValidDate(scanner);
@@ -69,7 +108,7 @@ public class AdminActions implements AdminActionsInterface {
         // Get the movie duration
         System.out.println("Enter the duration of the movie (in minutes):");
         int duration = getPositiveInteger(scanner, "Invalid duration. Please enter a positive number:");
-        if (duration <= 0){
+        if (duration <= 0) {
             return;
         }
 
@@ -80,63 +119,43 @@ public class AdminActions implements AdminActionsInterface {
             return;
         }
 
-        // Select a screen
-        System.out.println("Available screens:");
-        for (String screenName : theater.getScreenMap().keySet()) {
-            System.out.println(screenName);
-        }
-        System.out.println("Enter the screen name:");
-        String screenName = scanner.next().trim();
-        Screen screen = theater.getScreenMap().get(screenName);
-        if (screen == null) {
-            System.out.println("Invalid screen name!");
-            return;
-        }
-
         // Enter the show start time
-        //System.out.println("Enter the start time (HH:mm):");
         LocalTime startTime = getValidTime(scanner);
-        if (startTime == null){
+        if (startTime == null) {
             return;
         }
 
         // Check for overlapping shows
         LocalTime endTime = startTime.plusMinutes(duration + 30); // Add buffer time
-        boolean overlaps = false;
-        for (Shows show : screen.getRunningShows()) {
+        for (Shows show : selectedScreen.getRunningShows()) {
             if (startingDateOfMovie.isEqual(show.getDate()) &&
                     !(endTime.isBefore(show.getStartTime()) || startTime.isAfter(show.getEndTime()))) {
-                overlaps = true;
-                break;
+                System.out.println("Show overlaps with an existing one!");
+                return;
             }
         }
-        if (overlaps) {
-            System.out.println("Show overlaps with an existing one!");
-            return;
-        }
 
-        // Add the movie and show
+        // Duplicate seating arrangement
         HashMap<Character, ArrayList<String>> duplicateSeatingArrangement = new HashMap<>();
-        for (Character key : screen.getSeatingArrangement().keySet()) {
-            ArrayList<String> value = screen.getSeatingArrangement().get(key);
-            duplicateSeatingArrangement.put(key, new ArrayList<>(value));
+        for (Character key : selectedScreen.getSeatingArrangement().keySet()) {
+            duplicateSeatingArrangement.put(key, new ArrayList<>(selectedScreen.getSeatingArrangement().get(key)));
         }
 
-        Shows show = new Shows(startTime, endTime, startingDateOfMovie, screen, ticketPrice, duplicateSeatingArrangement);
-        screen.getRunningShows().add(show);
+        // Create and add show
+        Shows show = new Shows(startTime, endTime, startingDateOfMovie, selectedScreen, ticketPrice, duplicateSeatingArrangement);
+        selectedScreen.getRunningShows().add(show);
 
-        Movies movie = new Movies(movieName, locationOfTheater, startingDateOfMovie, duration, theater, screen, show);
-        if (!BMS.getMoviesHashMap().containsKey(movieName)) {
-            BMS.getMoviesHashMap().put(movieName, new ArrayList<>());
-        }
-        BMS.getMoviesHashMap().get(movieName).add(movie);
+        // Add movie
+        Movies movie = new Movies(movieName, locationOfTheater, startingDateOfMovie, duration, selectedTheater, selectedScreen, show);
+        BMS.getMoviesHashMap().computeIfAbsent(movieName, k -> new ArrayList<>()).add(movie);
 
-        System.out.println("Movie added successfully!");
+        System.out.println("Movie added successfully in " + selectedTheater.getTheaterName() + " at screen " + selectedScreen.getNameOfScreen());
     }
+
     @Override
     public LocalDate getValidDate(Scanner scanner) {
         // Getting date
-        System.out.println("Enter the date (dd mm yyyy):");
+        System.out.println("Enter the date (dd/mm/yyyy):");
         try {
             return LocalDate.parse(scanner.next(), BMS.getDateFormatter());
         } catch (Exception e) {
@@ -169,24 +188,49 @@ public class AdminActions implements AdminActionsInterface {
     }
 
     @Override
-    public void viewMovies(HashMap<String, ArrayList<Movies>> moviesHashMap) { // method to view movies
-        if (moviesHashMap.isEmpty()){ // check moviehashmap is empty
+    public void viewMovies(HashMap<String, ArrayList<Movies>> moviesHashMap) {
+        if (moviesHashMap.isEmpty()) {
             System.out.println("No movies available !");
-            return ;
+            return;
         }
-        for(var movieKey :moviesHashMap.keySet()) {//loop to iterate all key in hashmap
-            var availableMovie = BMS.getMoviesHashMap().get(movieKey); // assign the keyvalue in varable
-            for (Movies movies : availableMovie) { // loop to iterate all movies
-                // display movie info
-                System.out.println("\n Theatre :" + movies.getTheater().getTheaterName());
-                System.out.println(" Location :" + movies.getLocationOfTheater());
-                System.out.println(" Date :" + movies.getStartingDate().format((BMS.getDateFormatter())));
-                System.out.println(" Starting Time :" + movies.getShows().getStartTime().format((BMS.getTimeFormatter())));
-                System.out.println(" End Time :" + movies.getShows().getEndTime().format((BMS.getTimeFormatter()))+"\n\n");
 
+        // Store movie name and corresponding theaters & screens
+        HashMap<String, ArrayList<String>> movieDetails = new HashMap<>();
+
+        for (var movieKey : moviesHashMap.keySet()) {
+            var availableMovies = moviesHashMap.get(movieKey);
+
+            for (Movies movie : availableMovies) {
+                String movieName = movie.getNameOfMovie();
+                String theaterScreenInfo = "_______________________________________________________________________________________"+
+                        " \n Theater: " + movie.getTheater().getTheaterName() +
+                        " \n Location: " + movie.getLocationOfTheater() +
+                        " \n Screen: " + movie.getShows().getScreen().getNameOfScreen() +
+                        " \n Date: " + movie.getStartingDate().format(BMS.getDateFormatter()) +
+                        " \n Start Time: " + movie.getShows().getStartTime().format(BMS.getTimeFormatter()) +
+                        " \n End Time: " + movie.getShows().getEndTime().format(BMS.getTimeFormatter())+
+                        " \n_______________________________________________________________________________________";
+
+                // Manually check if the movie name exists in the HashMap
+                if (!movieDetails.containsKey(movieName)) {
+                    movieDetails.put(movieName, new ArrayList<>());
+                }
+
+                // Add theater and screen details
+                movieDetails.get(movieName).add(theaterScreenInfo);
+            }
+        }
+
+        // Display movies with all associated theaters & screens
+        for (var entry : movieDetails.entrySet()) {
+            System.out.println("\nMovie: " + entry.getKey());
+            for (String details : entry.getValue()) {
+                System.out.println(details);
             }
         }
     }
+
+
     @Override
     public void addTheater(Scanner scanner) { // method to add theater
         try {
@@ -225,6 +269,7 @@ public class AdminActions implements AdminActionsInterface {
                 System.out.print("Enter the grid: ");
                 String screenGrid = scanner.next(); // getting grid
                 var grid =utility.generateSeatingPatterns(noOfSeats, screenGrid); // store the seating patten
+
                 if (grid == null) { // check it is null
                     System.out.println("Invalid grid! Please re-enter the screen details.");
                     continue;
@@ -233,6 +278,7 @@ public class AdminActions implements AdminActionsInterface {
                 Screen screen = new Screen(screenName, noOfSeats, grid, screenGrid); // constructor to create the screen
                 screenHashMap.put(screenName, screen); //setting screen in hash map
                 noOfScreen--;
+                System.out.println("Screen: "+screenName+" was added Successfully");
             }
 
             Theater theater = new Theater(name, location, screenHashMap);// constructor to create the theater
